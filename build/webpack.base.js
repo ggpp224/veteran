@@ -1,8 +1,10 @@
 // webpack.base.js
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
+    mode: process.env.NODE_ENV,
     entry: path.join(__dirname, '../src/App.tsx'), // 入口文件
     // 打包文件出口
     output: {
@@ -15,6 +17,7 @@ module.exports = {
         rules: [
             {
                 test: /.(ts|tsx)$/, // 匹配.ts, tsx文件
+                exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
@@ -25,7 +28,29 @@ module.exports = {
                         ]
                     }
                 }
-            }
+            },
+            {
+                test: /\.(css)$/,
+                use: ['style-loader','css-loader']
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    // fallback to style-loader in development
+                    process.env.NODE_ENV !== 'production'
+                        ? 'style-loader'
+                        : MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'sass-loader',
+                ],
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|svg|jpg|png)$/,
+                use: {
+                    loader: 'url-loader',
+                },
+            },
+
         ]
     },
     resolve: {
@@ -35,6 +60,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, '../index.html'), // 模板取定义root节点的模板
             inject: true, // 自动注入静态资源
-        })
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+        }),
     ]
 }

@@ -1,10 +1,15 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-
+import '@fontsource/inter';
+import {TestPage} from './TestPage';
+import './app.scss';
 
 function App() {
-    // @ts-ignore
-    return <h2>webpack5-react-ts</h2>
+    return (
+        <div className="app">
+            <TestPage />
+        </div>
+    )
 }
 
 const root = document.getElementById('root');
